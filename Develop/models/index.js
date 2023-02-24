@@ -1,3 +1,5 @@
+//category, product & tag = have main info about the company 
+
 // import models
 const Product = require('./Product');
 const Category = require('./Category');
