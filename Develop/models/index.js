@@ -1,70 +1,38 @@
-//category, product & tag = have main info about the company 
+//category, product & tag = have main info about the company
 
-// import models
-const Product = require('./Product');
-const Category = require('./Category');
-const Tag = require('./Tag');
-const ProductTag = require('./ProductTag');
+// import product, category, tag & product tag models
+const Product = require("./Product");
+const Category = require("./Category");
+const Tag = require("./Tag");
+const ProductTag = require("./ProductTag");
 
-
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
-
-// Initialize Product model (table) by extending off Sequelize's Model class
-class Product extends Model {}
-
+// Products belongsTo Category
+Product.belongsTo(Category, {
+  foreignKey: "category_id",
+  onDelete: "CASCADE",
+});
 
 // Categories have many Products
+Category.hasMany(Product, {
+  foreignKey: "category_id",
+  onDelete: "SET NULL",
+});
 
 // Products belongToMany Tags (through ProductTag)
+Product.belongsToMany(Tag, {
+  foreignKey: 'product_tag',
+  through: 'ProductTag',
+});
 
 // Tags belongToMany Products (through ProductTag)
+Tag.belongsToMany(Product, {
+  foreignKey: 'tag_id', 
+  through: 'ProductTag', 
+})
 
-Product.init(
-  {
-    //define column data 
-    
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    product_name: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    price: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-      validate: {
-        isDecimal: true
-      }
-    },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 10,
-      validate: {
-        isNumeric: true
-      }
-    },
-    category_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'category',
-        key: 'id'
-      }
-    }
-  },
-  {
-    sequelize,
-    timestamps: false,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'product',
-  }
-);
-
-module.exports = Product;
+module.exports = {
+  Product,
+  Category,
+  Tag,
+  ProductTag,
+};
