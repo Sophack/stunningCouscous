@@ -46,7 +46,6 @@ router.get('/:id', async (req, res) => {
 // create new product
 router.post('/', (req, res) => {
   Product.create({
-
     product_name: req.body.product_name,
     price: req.body.price,
     stock: req.body.stock,
